@@ -54,9 +54,13 @@ driver.execute_cdp_cmd('Page.addScriptToEvaluateOnNewDocument', {
 try:
     # Open the website
     driver.get('https://mycutebaby.in/contest/participant/679e77f65b140')
+    driver.add_cookie({'name': 'PHPSESSID', 'value': '4bbf40f045a84a4b81531aab6fa53c9b'})
+    time.sleep(2)
+    # to refresh the page
+    driver.refresh()
 
     # Wait for the page to load
-    time.sleep(10)
+    time.sleep(8)
 
     # Print all text from the website (not page source)
     print(driver.find_element(By.TAG_NAME, 'body').text)
@@ -81,6 +85,22 @@ try:
     time.sleep(4)
     vote_form = driver.find_element(By.ID, "votefrm_sec")
     print(vote_form.text)
+    if not vote_button.text:
+        time.sleep(2)
+        # Scroll the button into view
+        driver.execute_script("arguments[0].scrollIntoView(true);", vote_button)
+        time.sleep(2)  # Wait for scrolling to complete
+
+        # Use JavaScript to click the button (to bypass overlapping elements)
+        driver.execute_script("arguments[0].click();", vote_button)
+
+        print("Vote button clicked successfully!")
+
+        # After clicking the button, wait for 4 seconds and extract all the content from id votefrm_sec
+        time.sleep(4)
+        vote_form = driver.find_element(By.ID, "votefrm_sec")
+        
+        
 
 except Exception as e:
     print(f"An error occurred: {e}")
